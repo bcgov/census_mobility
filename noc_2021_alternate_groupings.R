@@ -3,9 +3,9 @@
 #' 512^2-512=261,632 off diagonal cells, and the 1/16th census sample (stratified by age) would not be
 #' large enough to ensure the off diagonal cells are not suppressed.
 #'
-#' This script creates an custom grouping of NOCs where the smallest group represents just under 1%
+#' This script creates an custom grouping of NOCs where the smallest group represents .7%
 #' of the labour market, whereas the largest group is around 3%. The result is 67 occupational groupings,
-#' yielding a much less sparse 67^2=4,489 cell transition matrix.
+#' yielding a much less sparse 67^2 = 4,489 cell transition matrix.
 
 library(tidyverse)
 library(here)
@@ -138,7 +138,10 @@ in_large5$custom_desc[in_large5$noc_2021=="00018"] <- "Senior Managers & Legisla
 # bind all the levels together----------------------
 
 custom_mapping_2021 <- bind_rows(in_large5, in_large4, in_large3, in_large2, in_large1, noc_632, noc_0001)|>
-  arrange(custom_group, desc(prop))
+  arrange(custom_group, desc(prop))|>
+  mutate(custom_group=paste0("#", custom_group),
+         noc_2021=paste0("#", noc_2021)
+         )
 
 #sanity checks
 stopifnot(near(sum(custom_mapping_2021$prop),1))
